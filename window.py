@@ -220,19 +220,22 @@ class Tracker:
     def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
         self.src_cap = src_cap
         self.type_rep = type_rep
-        self.wrk_time = wrk_time  # време за работа(измерване)
-        self.src_time = src_time  # време за търсене
-        self.slp_time = slp_time  # време за сън
+        self.wrk_time = wrk_time
+        # work time
+        self.src_time = src_time
+        # search time
+        self.slp_time = slp_time
+        # sleep time
         self.bat_cap = bat_cap
         self.bsd = bsd
         self.src_energy = self.src_cap * self.src_time
 
 
 class WaterMeter(Tracker):
-    AVG_CURRENT_TIME_REPORT = 60 / 3600  # измерено!
-    AVG_CURRENT_CONSUMPTION_REPORT = 83.7  # mA измерено!
+    AVG_CURRENT_TIME_REPORT = 60 / 3600 
+    AVG_CURRENT_CONSUMPTION_REPORT = 83.7  # mA 
     AVG_CURRENT_CONSUMPTION_SLEEP = 0.0073  # mA
-    AVG_CURRENT_CONSUMPTION_WORK = 1.14  # mA измерено!
+    AVG_CURRENT_CONSUMPTION_WORK = 1.14  # mA 
 
     def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
         super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
@@ -252,9 +255,9 @@ class WaterMeter(Tracker):
 
 class FB(Tracker):
     AVG_CURRENT_TIME_REPORT = 180 / 3600
-    AVG_CURRENT_CONSUMPTION_REPORT = 20.9  # mA събуждане, регистриране в мрежата и доклад, измерено!
-    AVG_CURRENT_CONSUMPTION_SLEEP = 0.332  # mA консумация сън ( недостъпно), измерено!
-    AVG_CURRENT_CONSUMPTION_WORK = 8.52  # mA с вкл GSM, измерено!
+    AVG_CURRENT_CONSUMPTION_REPORT = 20.9  # mA wake up, log into the network and report, measured!
+    AVG_CURRENT_CONSUMPTION_SLEEP = 0.332  # mA sleep consumption (not available), measured!
+    AVG_CURRENT_CONSUMPTION_WORK = 8.52  # mA including GSM, measured!
 
     def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
         super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
