@@ -4,6 +4,11 @@ import math
 from tkinter import *
 from tkinter.ttk import *
 
+import enums
+from calculations.calc import Calculations
+from devices.tracker import Tracker
+from enums import WM, TB, TC, T5, TR
+
 mode = ' '
 
 window = Tk()
@@ -155,87 +160,11 @@ global batt_self_discharge
 global class_device
 
 
-class Calculations():
-    @staticmethod
-    def one_iteration_time(typ, rep, slp, wrk, src):
-        iter_time = 0
-        for ch in typ:
-            if ch == 'R':
-                iter_time += rep
-            elif ch == 'W':
-                iter_time += wrk
-            elif ch == 'S':
-                iter_time += slp
-            elif ch == 'C':
-                iter_time += src
-        return iter_time
-
-    @staticmethod
-    def one_iteration_capacity(typ, rep, slp, wrk, src):
-        iter_cap = 0
-        for ch in typ:
-            if ch == 'R':
-                iter_cap += rep
-            elif ch == 'W':
-                iter_cap += wrk
-            elif ch == 'S':
-                iter_cap += slp
-            elif ch == 'C':
-                iter_cap += src
-        return iter_cap
-
-    @staticmethod
-    def time_convert(t):
-        if t > 24 * 30 * 12:
-            years = t // (24 * 30 * 12)
-            months = (t - years * 24 * 30 * 12) // (24 * 30)
-            return f"{int(years)}y {int(months)}m"
-        elif t > 24 * 30:
-            months = t // (24 * 30)
-            days = (t - (months * 24 * 30)) // 24
-            return f"{int(months)}m {int(days)}d "
-        elif t > 24:
-            days = t // 24
-            hours = t - (days * 24)
-            return f"{int(days)}d {int(hours)}h"
-        else:
-            return f"{int(t)}h"
-
-    @staticmethod
-    def calculate_time(bat, iter_cap, iter_time, discharge):
-        # 1 year = 365d* 24h = 8760h,   730h = 1 month
-        time = 0
-        time_batt = 0
-        while bat >= 0:
-            bat -= iter_cap
-            time += iter_time
-            time_batt += iter_time
-            if time_batt >= 730:
-                bat *= (100 - discharge / 12) / 100
-                time_batt = 0
-        return time
-
-
-class Tracker:
-    def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
-        self.src_cap = src_cap
-        self.type_rep = type_rep
-        self.wrk_time = wrk_time
-        # work time
-        self.src_time = src_time
-        # search time
-        self.slp_time = slp_time
-        # sleep time
-        self.bat_cap = bat_cap
-        self.bsd = bsd
-        self.src_energy = self.src_cap * self.src_time
-
-
 class WaterMeter(Tracker):
-    AVG_CURRENT_TIME_REPORT = 60 / 3600 
-    AVG_CURRENT_CONSUMPTION_REPORT = 83.7  # mA 
-    AVG_CURRENT_CONSUMPTION_SLEEP = 0.0073  # mA
-    AVG_CURRENT_CONSUMPTION_WORK = 1.14  # mA 
+    AVG_CURRENT_TIME_REPORT = WM.AVG_CURRENT_TIME_REPORT
+    AVG_CURRENT_CONSUMPTION_REPORT = WM.AVG_CURRENT_TIME_REPORT
+    AVG_CURRENT_CONSUMPTION_SLEEP = WM.AVG_CURRENT_CONSUMPTION_SLEEP
+    AVG_CURRENT_CONSUMPTION_WORK = WM.AVG_CURRENT_CONSUMPTION_WORK
 
     def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
         super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
@@ -254,10 +183,10 @@ class WaterMeter(Tracker):
 
 
 class FB(Tracker):
-    AVG_CURRENT_TIME_REPORT = 180 / 3600
-    AVG_CURRENT_CONSUMPTION_REPORT = 20.9  # mA wake up, log into the network and report, measured!
-    AVG_CURRENT_CONSUMPTION_SLEEP = 0.332  # mA sleep consumption (not available), measured!
-    AVG_CURRENT_CONSUMPTION_WORK = 8.52  # mA including GSM, measured!
+    AVG_CURRENT_TIME_REPORT = TB.AVG_CURRENT_TIME_REPORT
+    AVG_CURRENT_CONSUMPTION_REPORT = TB.AVG_CURRENT_CONSUMPTION_REPORT
+    AVG_CURRENT_CONSUMPTION_SLEEP = TB.AVG_CURRENT_CONSUMPTION_SLEEP
+    AVG_CURRENT_CONSUMPTION_WORK = TB.AVG_CURRENT_CONSUMPTION_WORK
 
     def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
         super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
@@ -276,10 +205,10 @@ class FB(Tracker):
 
 
 class FC(Tracker):
-    AVG_CURRENT_TIME_REPORT = 22 / 3600
-    AVG_CURRENT_CONSUMPTION_REPORT = 81.5  # mA
-    AVG_CURRENT_CONSUMPTION_SLEEP = 0.177  # mA
-    AVG_CURRENT_CONSUMPTION_WORK = 7.33  # мА
+    AVG_CURRENT_TIME_REPORT = TC.AVG_CURRENT_TIME_REPORT
+    AVG_CURRENT_CONSUMPTION_REPORT = TC.AVG_CURRENT_CONSUMPTION_REPORT
+    AVG_CURRENT_CONSUMPTION_SLEEP = TC.AVG_CURRENT_CONSUMPTION_SLEEP
+    AVG_CURRENT_CONSUMPTION_WORK = TC.AVG_CURRENT_CONSUMPTION_WORK
 
     def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
         super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
@@ -298,10 +227,10 @@ class FC(Tracker):
 
 
 class F5(Tracker):
-    AVG_CURRENT_TIME_REPORT = 60 / 3600
-    AVG_CURRENT_CONSUMPTION_REPORT = 51.8  # mA
-    AVG_CURRENT_CONSUMPTION_SLEEP = 0.185  # mA
-    AVG_CURRENT_CONSUMPTION_WORK = 142  # mA with GSM
+    AVG_CURRENT_TIME_REPORT = T5.AVG_CURRENT_TIME_REPORT
+    AVG_CURRENT_CONSUMPTION_REPORT = T5.AVG_CURRENT_CONSUMPTION_REPORT
+    AVG_CURRENT_CONSUMPTION_SLEEP = T5.AVG_CURRENT_CONSUMPTION_SLEEP
+    AVG_CURRENT_CONSUMPTION_WORK = T5.AVG_CURRENT_CONSUMPTION_WORK
 
     def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
         super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
@@ -320,10 +249,10 @@ class F5(Tracker):
 
 
 class FR(Tracker):
-    AVG_CURRENT_TIME_REPORT = 60 / 3600
-    AVG_CURRENT_CONSUMPTION_REPORT = 65.5  # mA
-    AVG_CURRENT_CONSUMPTION_SLEEP = 0.223  # mA
-    AVG_CURRENT_CONSUMPTION_WORK = 1.89  # mA
+    AVG_CURRENT_TIME_REPORT = TR.AVG_CURRENT_TIME_REPORT
+    AVG_CURRENT_CONSUMPTION_REPORT = TR.AVG_CURRENT_CONSUMPTION_REPORT
+    AVG_CURRENT_CONSUMPTION_SLEEP = TR.AVG_CURRENT_CONSUMPTION_SLEEP
+    AVG_CURRENT_CONSUMPTION_WORK = TR.AVG_CURRENT_CONSUMPTION_WORK
 
     def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
         super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
@@ -434,7 +363,7 @@ def check_valid_data():
     if flag1 == False:
         lbl_lifetime.configure(text="Enter")
 
-    print(mode)
+    #print(mode)
 
 
 def print_result():
