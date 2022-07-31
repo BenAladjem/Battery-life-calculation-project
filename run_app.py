@@ -4,10 +4,9 @@ import math
 from tkinter import *
 from tkinter.ttk import *
 
-import enums
 from calculations.calc import Calculations
 from devices.tracker import Tracker
-from enums import WM, TB, TC, T5, TR
+from enums import WM, TB, TC, T5, TR, TD
 
 mode = ' '
 
@@ -160,103 +159,17 @@ global batt_self_discharge
 global class_device
 
 
-class WaterMeter(Tracker):
-    AVG_CURRENT_TIME_REPORT = WM.AVG_CURRENT_TIME_REPORT
-    AVG_CURRENT_CONSUMPTION_REPORT = WM.AVG_CURRENT_TIME_REPORT
-    AVG_CURRENT_CONSUMPTION_SLEEP = WM.AVG_CURRENT_CONSUMPTION_SLEEP
-    AVG_CURRENT_CONSUMPTION_WORK = WM.AVG_CURRENT_CONSUMPTION_WORK
+class All_devices(Tracker):
 
-    def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
+    def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd, cd):
         super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
 
-        self.rep_energy = self.AVG_CURRENT_CONSUMPTION_REPORT * self.AVG_CURRENT_TIME_REPORT
-        self.slp_energy = self.AVG_CURRENT_CONSUMPTION_SLEEP * self.slp_time
-        self.wrk_energy = self.AVG_CURRENT_CONSUMPTION_WORK * self.wrk_time
-        self.iter_time = Calculations.one_iteration_time(self.type_rep, self.AVG_CURRENT_TIME_REPORT, self.slp_time,
-                                                         self.wrk_time, src_time)
-        self.iter_cap = Calculations.one_iteration_capacity(self.type_rep, self.rep_energy, self.slp_energy,
-                                                            self.wrk_energy, self.src_energy)
-        self.batt_life = Calculations.calculate_time(self.bat_cap, self.iter_cap, self.iter_time, self.bsd)
-        self.batt_life_time = Calculations.time_convert(
-            Calculations.calculate_time(self.bat_cap, self.iter_cap, self.iter_time, self.bsd))
-        self.num_iterations = math.floor(self.batt_life / self.iter_time)
+        self.AVG_CURRENT_TIME_REPORT = cd.AVG_CURRENT_TIME_REPORT
+        self.AVG_CURRENT_CONSUMPTION_REPORT = cd.AVG_CURRENT_CONSUMPTION_REPORT
+        self.AVG_CURRENT_CONSUMPTION_SLEEP = cd.AVG_CURRENT_CONSUMPTION_SLEEP
+        self.AVG_CURRENT_CONSUMPTION_WORK = cd.AVG_CURRENT_CONSUMPTION_WORK
 
-
-class FB(Tracker):
-    AVG_CURRENT_TIME_REPORT = TB.AVG_CURRENT_TIME_REPORT
-    AVG_CURRENT_CONSUMPTION_REPORT = TB.AVG_CURRENT_CONSUMPTION_REPORT
-    AVG_CURRENT_CONSUMPTION_SLEEP = TB.AVG_CURRENT_CONSUMPTION_SLEEP
-    AVG_CURRENT_CONSUMPTION_WORK = TB.AVG_CURRENT_CONSUMPTION_WORK
-
-    def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
-        super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
-
-        self.rep_energy = self.AVG_CURRENT_CONSUMPTION_REPORT * self.AVG_CURRENT_TIME_REPORT
-        self.slp_energy = self.AVG_CURRENT_CONSUMPTION_SLEEP * self.slp_time
-        self.wrk_energy = self.AVG_CURRENT_CONSUMPTION_WORK * self.wrk_time
-        self.iter_time = Calculations.one_iteration_time(self.type_rep, self.AVG_CURRENT_TIME_REPORT, self.slp_time,
-                                                         self.wrk_time, src_time)
-        self.iter_cap = Calculations.one_iteration_capacity(self.type_rep, self.rep_energy, self.slp_energy,
-                                                            self.wrk_energy, self.src_energy)
-        self.batt_life = Calculations.calculate_time(self.bat_cap, self.iter_cap, self.iter_time, self.bsd)
-        self.batt_life_time = Calculations.time_convert(
-            Calculations.calculate_time(self.bat_cap, self.iter_cap, self.iter_time, self.bsd))
-        self.num_iterations = math.floor(self.batt_life / self.iter_time)
-
-
-class FC(Tracker):
-    AVG_CURRENT_TIME_REPORT = TC.AVG_CURRENT_TIME_REPORT
-    AVG_CURRENT_CONSUMPTION_REPORT = TC.AVG_CURRENT_CONSUMPTION_REPORT
-    AVG_CURRENT_CONSUMPTION_SLEEP = TC.AVG_CURRENT_CONSUMPTION_SLEEP
-    AVG_CURRENT_CONSUMPTION_WORK = TC.AVG_CURRENT_CONSUMPTION_WORK
-
-    def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
-        super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
-
-        self.rep_energy = self.AVG_CURRENT_CONSUMPTION_REPORT * self.AVG_CURRENT_TIME_REPORT
-        self.slp_energy = self.AVG_CURRENT_CONSUMPTION_SLEEP * self.slp_time
-        self.wrk_energy = self.AVG_CURRENT_CONSUMPTION_WORK * self.wrk_time
-        self.iter_time = Calculations.one_iteration_time(self.type_rep, self.AVG_CURRENT_TIME_REPORT, self.slp_time,
-                                                         self.wrk_time, src_time)
-        self.iter_cap = Calculations.one_iteration_capacity(self.type_rep, self.rep_energy, self.slp_energy,
-                                                            self.wrk_energy, self.src_energy)
-        self.batt_life = Calculations.calculate_time(self.bat_cap, self.iter_cap, self.iter_time, self.bsd)
-        self.batt_life_time = Calculations.time_convert(
-            Calculations.calculate_time(self.bat_cap, self.iter_cap, self.iter_time, self.bsd))
-        self.num_iterations = math.floor(self.batt_life / self.iter_time)
-
-
-class F5(Tracker):
-    AVG_CURRENT_TIME_REPORT = T5.AVG_CURRENT_TIME_REPORT
-    AVG_CURRENT_CONSUMPTION_REPORT = T5.AVG_CURRENT_CONSUMPTION_REPORT
-    AVG_CURRENT_CONSUMPTION_SLEEP = T5.AVG_CURRENT_CONSUMPTION_SLEEP
-    AVG_CURRENT_CONSUMPTION_WORK = T5.AVG_CURRENT_CONSUMPTION_WORK
-
-    def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
-        super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
-
-        self.rep_energy = self.AVG_CURRENT_CONSUMPTION_REPORT * self.AVG_CURRENT_TIME_REPORT
-        self.slp_energy = self.AVG_CURRENT_CONSUMPTION_SLEEP * self.slp_time
-        self.wrk_energy = self.AVG_CURRENT_CONSUMPTION_WORK * self.wrk_time
-        self.iter_time = Calculations.one_iteration_time(self.type_rep, self.AVG_CURRENT_TIME_REPORT, self.slp_time,
-                                                         self.wrk_time, src_time)
-        self.iter_cap = Calculations.one_iteration_capacity(self.type_rep, self.rep_energy, self.slp_energy,
-                                                            self.wrk_energy, self.src_energy)
-        self.batt_life = Calculations.calculate_time(self.bat_cap, self.iter_cap, self.iter_time, self.bsd)
-        self.batt_life_time = Calculations.time_convert(
-            Calculations.calculate_time(self.bat_cap, self.iter_cap, self.iter_time, self.bsd))
-        self.num_iterations = math.floor(self.batt_life / self.iter_time)
-
-
-class FR(Tracker):
-    AVG_CURRENT_TIME_REPORT = TR.AVG_CURRENT_TIME_REPORT
-    AVG_CURRENT_CONSUMPTION_REPORT = TR.AVG_CURRENT_CONSUMPTION_REPORT
-    AVG_CURRENT_CONSUMPTION_SLEEP = TR.AVG_CURRENT_CONSUMPTION_SLEEP
-    AVG_CURRENT_CONSUMPTION_WORK = TR.AVG_CURRENT_CONSUMPTION_WORK
-
-    def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd):
-        super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
-
+        self.cd = cd
         self.rep_energy = self.AVG_CURRENT_CONSUMPTION_REPORT * self.AVG_CURRENT_TIME_REPORT
         self.slp_energy = self.AVG_CURRENT_CONSUMPTION_SLEEP * self.slp_time
         self.wrk_energy = self.AVG_CURRENT_CONSUMPTION_WORK * self.wrk_time
@@ -276,8 +189,8 @@ class TestDevice(Tracker):
         self.wrk_cap = wrk_cap
         self.slp_cap = slp_cap
 
-        self.rep_time = 0
-        self.rep_cap = 0
+        self.rep_time = TD.report_time
+        self.rep_cap = TD.report_capacity
 
         self.src_energy = self.src_cap * self.src_time
         self.slp_energy = self.slp_cap * self.slp_time
@@ -300,7 +213,6 @@ def clicked_get_device():
     if kind_of_device == "Test Device":
         flag = True
     if kind_of_device == "Test Device":
-
         txt_wrk_cap = Entry(window, validate='key', textvariable=sv7, width=10)
         txt_wrk_cap.grid(column=4, row=11)
         txt_slp_cap = Entry(window, validate='key', textvariable=sv8, width=10)
@@ -310,21 +222,20 @@ def clicked_get_device():
         lbl_slp_cap.configure(text="sleep cap")
     else:
         if flag:
-            txt_rep_cap.delete(0, END)
             txt_wrk_cap.delete(0, END)
             txt_slp_cap.delete(0, END)
 
         device = combo.get()
         if device == "Tracker Bike":
-            class_device = FB
+            class_device = TB
         elif device == "Tracker Car":
-            class_device = FC
+            class_device = TC
         elif device == "Tracker Pet":
-            class_device = F5
+            class_device = T5
         elif device == "Tracker LoRa":
-            class_device = FR
+            class_device = TR
         elif device == "Water Meter":
-            class_device = WaterMeter
+            class_device = WM
 
         lbl_wrc_cap.configure(text=class_device.AVG_CURRENT_CONSUMPTION_WORK)
         lbl_slp_cap.configure(text=class_device.AVG_CURRENT_CONSUMPTION_SLEEP)
@@ -344,14 +255,12 @@ def check_valid_data():
         lbl_iterations.configure(text="mode")
     else:
         flag1 = True
-
     if not combo.get() == "Test Device":
         if flag1:
             print_result()
     else:
         clicked_get_device()
         if flag1:
-
             if len(txt_wrk_cap.get()) == 0:
                 lbl_lifetime.configure(text="Enter")
                 lbl_iterations.configure(text="work cap")
@@ -363,14 +272,12 @@ def check_valid_data():
     if flag1 == False:
         lbl_lifetime.configure(text="Enter")
 
-    #print(mode)
-
 
 def print_result():
     result_dict = {}
     clicked_get_device()
 
-    global class_device
+    global class_device, c_d
     batt_capacity = float(txt_batt_cap.get())
     work_time = float(txt_wrk_time.get()) / 3600
     sleep_time = float(txt_slp_time.get()) / 3600
@@ -394,15 +301,15 @@ def print_result():
     type_report = ws_cycles()
 
     if device == "Tracker Bike":
-        class_device = FB
+        c_d = TB
     elif device == "Tracker Car":
-        class_device = FC
+        c_d = TC
     elif device == "Tracker Pet":
-        class_device = F5
+        c_d = T5
     elif device == "Tracker LoRa":
-        class_device = FR
+        c_d = TR
     elif device == "Water Meter":
-        class_device = WaterMeter
+        c_d = WM
     else:
         class_device = TestDevice
 
@@ -419,8 +326,8 @@ def print_result():
         result_dict["report time"] = 0
         result_dict["report cap"] = 0
     else:
-        dev = class_device(batt_capacity, search_time / 3600, search_cap, sleep_time, work_time, type_report,
-                           batt_self_discharge)
+        dev = All_devices(batt_capacity, search_time / 3600, search_cap, sleep_time, work_time, type_report,
+                          batt_self_discharge, c_d)
 
         result_dict["work cap"] = dev.AVG_CURRENT_CONSUMPTION_WORK
         result_dict["sleep cap"] = dev.AVG_CURRENT_CONSUMPTION_SLEEP
@@ -483,6 +390,11 @@ def clean():
     lbl100.configure(text=mode)
 
 
+def save():
+    if flag1:
+        generate_report()
+
+
 def validate_float(var):
     new_value = var.get()
     try:
@@ -490,11 +402,6 @@ def validate_float(var):
         validate_float.old_value = new_value
     except:
         var.set(validate_float.old_value)
-
-
-def save():
-    if flag1:
-        generate_report()
 
 
 def nums_protocol():
@@ -524,7 +431,6 @@ def generate_report():
     date = datetime.datetime.now()
     date_format = date.strftime("%Y-%m-%d %H:%M:%S")
     info["date"] = date_format
-    print(info)
 
     num_protocol = info["number protocol"]
     data = info["date"]
@@ -575,17 +481,13 @@ def ws_cycles():
     global new_mode
     if len(txt_rep_freq.get()) > 0:
         report_frequency = int(txt_rep_freq.get())
-
         if "WS" in mode and not report_frequency == 0:
             pos = mode.index("WS")
             new_mode = mode[:pos] + ("WS" * report_frequency) + mode[pos + 2:]
         else:
             new_mode = mode
-
     else:
         new_mode = mode
-
-    print(new_mode)
     return new_mode
 
 

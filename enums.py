@@ -1,5 +1,3 @@
-
-
 class WM():
     AVG_CURRENT_TIME_REPORT = 60 / 3600
     AVG_CURRENT_CONSUMPTION_REPORT = 83.7
@@ -35,3 +33,8 @@ class TR():
     AVG_CURRENT_CONSUMPTION_SLEEP = 0.223  # mA
     AVG_CURRENT_CONSUMPTION_WORK = 1.89  # mA
 
+
+class TD():
+    # Test Device
+    report_time = 0
+    report_capacity = 0
