@@ -57,3 +57,5 @@ class Calculations():
                 bat *= (100 - discharge / 12) / 100
                 time_batt = 0
         return time
+
+

@@ -36,5 +36,5 @@ class TR():
 
 class TD():
     # Test Device
-    report_time = 0
-    report_capacity = 0
+    report_time = 0 # Default
+    report_capacity = 0 # Default
