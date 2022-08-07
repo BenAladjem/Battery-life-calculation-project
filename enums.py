@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 class WM():
     AVG_CURRENT_TIME_REPORT = 60 / 3600
     AVG_CURRENT_CONSUMPTION_REPORT = 83.7
