@@ -207,6 +207,22 @@ class TestDevice(Tracker):
         self.num_iterations = math.floor(self.batt_life / self.iter_time)
 
 
+def type_of_device(device):
+    if device == "Tracker Bike":
+        class_device = TB
+    elif device == "Tracker Car":
+        class_device = TC
+    elif device == "Tracker Pet":
+        class_device = T5
+    elif device == "Tracker LoRa":
+        class_device = TR
+    elif device == "Water Meter":
+        class_device = WM
+    else:
+        class_device = TestDevice
+    return class_device
+
+
 def clicked_get_device():
     kind_of_device = combo.get()
     global class_device, txt_rep_cap, txt_wrk_cap, txt_slp_cap, flag
@@ -226,16 +242,7 @@ def clicked_get_device():
             txt_slp_cap.delete(0, END)
 
         device = combo.get()
-        if device == "Tracker Bike":
-            class_device = TB
-        elif device == "Tracker Car":
-            class_device = TC
-        elif device == "Tracker Pet":
-            class_device = T5
-        elif device == "Tracker LoRa":
-            class_device = TR
-        elif device == "Water Meter":
-            class_device = WM
+        class_device = type_of_device(device)
 
         lbl_wrc_cap.configure(text=class_device.AVG_CURRENT_CONSUMPTION_WORK)
         lbl_slp_cap.configure(text=class_device.AVG_CURRENT_CONSUMPTION_SLEEP)
@@ -277,7 +284,7 @@ def print_result():
     result_dict = {}
     clicked_get_device()
 
-    global class_device, c_d
+    global class_device, class_device
     batt_capacity = float(txt_batt_cap.get())
     work_time = float(txt_wrk_time.get()) / 3600
     sleep_time = float(txt_slp_time.get()) / 3600
@@ -299,19 +306,7 @@ def print_result():
 
     device = combo.get()
     type_report = ws_cycles()
-
-    if device == "Tracker Bike":
-        c_d = TB
-    elif device == "Tracker Car":
-        c_d = TC
-    elif device == "Tracker Pet":
-        c_d = T5
-    elif device == "Tracker LoRa":
-        c_d = TR
-    elif device == "Water Meter":
-        c_d = WM
-    else:
-        class_device = TestDevice
+    class_device = type_of_device(device)
 
     if class_device == TestDevice:
         work_cap = float(txt_wrk_cap.get())
@@ -327,7 +322,7 @@ def print_result():
         result_dict["report cap"] = 0
     else:
         dev = All_devices(batt_capacity, search_time / 3600, search_cap, sleep_time, work_time, type_report,
-                          batt_self_discharge, c_d)
+                          batt_self_discharge, class_device)
 
         result_dict["work cap"] = dev.AVG_CURRENT_CONSUMPTION_WORK
         result_dict["sleep cap"] = dev.AVG_CURRENT_CONSUMPTION_SLEEP
