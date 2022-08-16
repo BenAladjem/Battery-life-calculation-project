@@ -164,12 +164,13 @@ class All_devices(Tracker):
     def __init__(self, bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd, cd):
         super().__init__(bat_cap, src_time, src_cap, slp_time, wrk_time, type_rep, bsd)
 
-        self.AVG_CURRENT_TIME_REPORT = cd.AVG_CURRENT_TIME_REPORT
-        self.AVG_CURRENT_CONSUMPTION_REPORT = cd.AVG_CURRENT_CONSUMPTION_REPORT
-        self.AVG_CURRENT_CONSUMPTION_SLEEP = cd.AVG_CURRENT_CONSUMPTION_SLEEP
-        self.AVG_CURRENT_CONSUMPTION_WORK = cd.AVG_CURRENT_CONSUMPTION_WORK
-
         self.cd = cd
+        self.AVG_CURRENT_TIME_REPORT = self.cd.AVG_CURRENT_TIME_REPORT.value
+        self.AVG_CURRENT_CONSUMPTION_REPORT = self.cd.AVG_CURRENT_CONSUMPTION_REPORT.value
+        self.AVG_CURRENT_CONSUMPTION_SLEEP = self.cd.AVG_CURRENT_CONSUMPTION_SLEEP.value
+        self.AVG_CURRENT_CONSUMPTION_WORK = self.cd.AVG_CURRENT_CONSUMPTION_WORK.value
+
+
         self.rep_energy = self.AVG_CURRENT_CONSUMPTION_REPORT * self.AVG_CURRENT_TIME_REPORT
         self.slp_energy = self.AVG_CURRENT_CONSUMPTION_SLEEP * self.slp_time
         self.wrk_energy = self.AVG_CURRENT_CONSUMPTION_WORK * self.wrk_time
@@ -189,8 +190,8 @@ class TestDevice(Tracker):
         self.wrk_cap = wrk_cap
         self.slp_cap = slp_cap
 
-        self.rep_time = TD.report_time
-        self.rep_cap = TD.report_capacity
+        self.rep_time = TD.report_time.value
+        self.rep_cap = TD.report_capacity.value
 
         self.src_energy = self.src_cap * self.src_time
         self.slp_energy = self.slp_cap * self.slp_time
@@ -244,8 +245,8 @@ def clicked_get_device():
         device = combo.get()
         class_device = type_of_device(device)
 
-        lbl_wrc_cap.configure(text=class_device.AVG_CURRENT_CONSUMPTION_WORK)
-        lbl_slp_cap.configure(text=class_device.AVG_CURRENT_CONSUMPTION_SLEEP)
+        lbl_wrc_cap.configure(text=class_device.AVG_CURRENT_CONSUMPTION_WORK.value)
+        lbl_slp_cap.configure(text=class_device.AVG_CURRENT_CONSUMPTION_SLEEP.value)
 
 
 def check_valid_data():
