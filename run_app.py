@@ -190,8 +190,9 @@ class TestDevice(Tracker):
         self.wrk_cap = wrk_cap
         self.slp_cap = slp_cap
 
-        self.rep_time = TD.report_time.value
-        self.rep_cap = TD.report_capacity.value
+        self.TD = TD
+        self.rep_time = self.TD.report_time.value
+        self.rep_cap = self.TD.report_capacity.value
 
         self.src_energy = self.src_cap * self.src_time
         self.slp_energy = self.slp_cap * self.slp_time
