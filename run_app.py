@@ -6,7 +6,7 @@ from tkinter.ttk import *
 
 from calculations.calc import Calculations
 from devices.tracker import Tracker
-from enums import WM, TB, TC, T5, TR, TD
+from enums import WM, TB, TC, T5, TR, TD, TOne
 
 mode = ' '
 
