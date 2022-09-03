@@ -142,7 +142,7 @@ txt_src_cap = Entry(window, validate='key', textvariable=sv10, width=10)
 txt_src_cap.grid(column=4, row=8)
 
 combo = Combobox(window)
-combo['values'] = ("Tracker Bike", "Tracker Car", "Tracker LoRa", "Tracker Pet", "Water Meter", "Test Device")
+combo['values'] = ("Tracker Bike", "Tracker Car", "Tracker LoRa", "Tracker Pet", "Water Meter", "Tracker One", "Test Device")
 combo.current(0)
 combo.grid(column=0, row=6)
 
@@ -220,6 +220,8 @@ def type_of_device(device):
         class_device = TR
     elif device == "Water Meter":
         class_device = WM
+    elif device == "Tracker One":
+        class_device = TOne
     else:
         class_device = TestDevice
     return class_device
